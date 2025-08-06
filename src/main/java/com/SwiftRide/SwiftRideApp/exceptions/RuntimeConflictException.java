@@ -1,5 +1,11 @@
-package com.SwiftRide.SwiftRideApp.exceptions;
+package com.nishant.uber.uberApp.exceptions;
 
+public class RuntimeConflictException extends RuntimeException{
+    public RuntimeConflictException() {
+        super();
+    }
 
-public class RuntimeConflictException extends RuntimeException {
+    public RuntimeConflictException(String message) {
+        super(message);
+    }
 }
