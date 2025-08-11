@@ -1,4 +1,13 @@
 package com.SwiftRide.SwiftRideApp.strategies;
 
-public interface RideFareCalculationStrategy  {
+
+import com.SwiftRide.SwiftRideApp.entities.RideRequest;
+
+public interface RideFareCalculationStrategy {
+
+    double RIDE_FARE_MULTIPLIER = 10;
+
+    double calculateFare(RideRequest rideRequest);
+
 }
+
