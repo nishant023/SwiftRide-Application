@@ -5,9 +5,9 @@ import com.SwiftRide.SwiftRideApp.dto.SignupDto;
 import com.SwiftRide.SwiftRideApp.dto.UserDto;
 
 public interface AuthService {
-    String[] login(String email,String password);
-    UserDto signUp(SignupDto signUpDto);
-    DriverDto onboardNewDriver(String userId);
+    String[] login(String email, String password);
+
+    UserDto signup(SignupDto signUpDto);
 
     DriverDto onboardNewDriver(Long userId, String vehicleId);
 
