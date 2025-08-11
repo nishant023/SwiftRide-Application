@@ -34,7 +34,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
             ORDER BY ST_Distance_Sphere(d.current_location, :pickupLocation)
             LIMIT 10
             """, nativeQuery = true)
-    List<Driver> findMatchingDrivers(@Param("pickupLocation") Point pickupLocation);
+    List<Driver> findTenNearestDrivers(@Param("pickupLocation") Point pickupLocation);
 
     //this is optimized query because the current
     // location is stored in Geo spatial data base is stored by the use of the indexes and inside this if
