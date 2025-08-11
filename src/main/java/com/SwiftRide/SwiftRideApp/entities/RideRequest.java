@@ -28,7 +28,7 @@ public class RideRequest {
     @Column(columnDefinition = "POINT SRID 4326")
     private Point pickupLocation;
 
-    @Column(columnDefinition = "Geometry(Point, 4326)")
+    @Column(columnDefinition = "POINT SRID 4326")
     private Point dropOffLocation;
 
     @CreationTimestamp

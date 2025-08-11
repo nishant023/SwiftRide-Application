@@ -8,10 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RiderDto {
+public class SignupDto {
 
-    private Long id;
-    private UserDto user;
-    private Double rating;
+    private String name;
+    private String email;
+    private String password;
 }
-
