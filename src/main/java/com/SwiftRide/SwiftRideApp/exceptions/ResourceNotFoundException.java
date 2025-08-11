@@ -1,8 +1,8 @@
 package com.SwiftRide.SwiftRideApp.exceptions;
 
-public class ResourceNotFoundException extends RuntimeException {
+
+public class ResourceNotFoundException extends RuntimeException{
     public ResourceNotFoundException() {
-        super();
     }
 
     public ResourceNotFoundException(String message) {
