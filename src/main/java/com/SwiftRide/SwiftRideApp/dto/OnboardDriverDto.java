@@ -3,6 +3,6 @@ package com.SwiftRide.SwiftRideApp.dto;
 import lombok.Data;
 
 @Data
-public class RideStartDto {
-    String otp;
+public class OnboardDriverDto {
+    private String vehicleId;
 }

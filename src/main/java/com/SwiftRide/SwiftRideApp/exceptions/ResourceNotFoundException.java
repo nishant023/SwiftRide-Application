@@ -1,6 +1,6 @@
-package com.nishant.uber.uberApp.exceptions;
+package com.SwiftRide.SwiftRideApp.exceptions;
 
-public class ResourceNotFoundException extends RuntimeException{
+public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException() {
         super();
     }
