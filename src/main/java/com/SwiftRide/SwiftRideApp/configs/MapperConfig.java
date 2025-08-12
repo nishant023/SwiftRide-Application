@@ -12,23 +12,33 @@ public class MapperConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        ModelMapper mapper = new ModelMapper();
-
-        mapper.typeMap(PointDto.class, Point.class).setConverter(context -> {
+        ModelMapper modelMapper = new ModelMapper();
+        // ✅ Convert PointDto to Point (DTO → Entity)
+        modelMapper.typeMap(PointDto.class, Point.class).setConverter(context -> {
             PointDto pointDto = context.getSource();
             return GeometryUtil.createPoint(pointDto);
         });
 
-        mapper.typeMap(Point.class, PointDto.class).setConverter(context -> {
+        // ✅ Convert Point to PointDto (Entity → DTO)
+        modelMapper.typeMap(Point.class, PointDto.class).setConverter(context -> {
             Point point = context.getSource();
-            double coordinates[] = {
-                    point.getX(),
-                    point.getY()
-            };
-            return new PointDto(coordinates);
+            return new PointDto(new double[]{point.getX(), point.getY()});
         });
+//        mapper.typeMap(PointDto.class, Point.class).setConverter(context -> {
+//            PointDto pointDto = context.getSource();
+//            return GeometryUtil.createPoint(pointDto);
+//        });
+//
+//        mapper.typeMap(Point.class, PointDto.class).setConverter(context -> {
+//            Point point = context.getSource();
+//            double coordinates[] = {
+//                    point.getX(),
+//                    point.getY()
+//            };
+//            return new PointDto(coordinates);
+//        });
 
 
-        return mapper;
+        return modelMapper;
     }
 }

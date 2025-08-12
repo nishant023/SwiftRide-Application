@@ -16,7 +16,8 @@ public class JwtConfig {
 
     @Bean
     public SecretKey secretKey() {
-
+        // simple: use raw bytes (ok for dev). For production, use BASE64 secret.
+        byte[] keyBytes = jwtSecretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     }
 }

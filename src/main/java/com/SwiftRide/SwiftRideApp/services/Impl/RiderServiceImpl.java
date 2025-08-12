@@ -16,6 +16,7 @@ import com.SwiftRide.SwiftRideApp.services.RatingService;
 import com.SwiftRide.SwiftRideApp.services.RideService;
 import com.SwiftRide.SwiftRideApp.services.RiderService;
 import com.SwiftRide.SwiftRideApp.strategies.RideStrategyManager;
+import com.SwiftRide.SwiftRideApp.utils.GeometryUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -25,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -43,21 +45,35 @@ public class RiderServiceImpl implements RiderService {
     @Override
     @Transactional
     public RideRequestDto requestRide(RideRequestDto rideRequestDto) {
-        Rider rider = getCurrentRider();
-        RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
-        rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
-        rideRequest.setRider(rider);
+        // ✅ Step 1: Get authenticated Rider
+        Rider currentRider = getCurrentRider();
 
+//        RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
+
+        // ✅ Step 2: Manually construct RideRequest
+        RideRequest rideRequest = new RideRequest();
+        rideRequest.setPickupLocation(GeometryUtil.createPoint(rideRequestDto.getPickupLocation()));
+        rideRequest.setDropOffLocation(GeometryUtil.createPoint(rideRequestDto.getDropOffLocation()));
+        rideRequest.setPaymentMethod(rideRequestDto.getPaymentMethod());
+        rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
+        rideRequest.setRequestedTime(LocalDateTime.now());
+        rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
+        rideRequest.setRider(currentRider);// Only set once
+
+        // ✅ Step 3: Calculate fare
         Double fare = rideStrategyManager.rideFareCalculationStrategy().calculateFare(rideRequest);
         rideRequest.setFare(fare);
 
+        // ✅ Step 4: Save ride request
         RideRequest savedRideRequest = rideRequestRepository.save(rideRequest);
 
+        // ✅ Step 5: Match drivers (broadcast to nearby drivers)
         List<Driver> drivers = rideStrategyManager
-                .driverMatchingStrategy(rider.getRating()).findMatchingDriver(rideRequest);
+                .driverMatchingStrategy(currentRider.getRating())
+                .findMatchingDriver(rideRequest);
 
 //        TODO : Send notification to all the drivers about this ride request
-
+        // ✅ Step 6: Return DTO (works because MapperConfig handles Point & Rider→UserDto mapping)
         return modelMapper.map(savedRideRequest, RideRequestDto.class);
     }
 

@@ -57,5 +57,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             handlerExceptionResolver.resolveException(request, response, null, ex);
         }
     }
-
 }
