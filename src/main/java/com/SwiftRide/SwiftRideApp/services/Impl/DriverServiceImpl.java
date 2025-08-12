@@ -72,6 +72,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @Transactional
     public RideDto startRide(Long rideId, String otp) {
         Ride ride = rideService.getRideById(rideId);
         Driver driver = getCurrentDriver();
@@ -117,7 +118,7 @@ public class DriverServiceImpl implements DriverService {
 
         Rider rider = savedRide.getRider();
         RiderDto riderDto = new RiderDto();
-        riderDto.setId(ride.getId());
+        riderDto.setId(rider.getId());
         riderDto.setRating(rider.getRating());
         UserDto user = modelMapper.map(rider.getUser(), UserDto.class);
         riderDto.setUser(user);
