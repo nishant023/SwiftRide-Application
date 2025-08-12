@@ -101,7 +101,7 @@ public class RiderServiceImpl implements RiderService {
         Ride ride = rideService.getRideById(rideId);
         Rider rider = getCurrentRider();
 
-        if(!rider.equals(ride.getRider())) {
+        if((rider.getId())!=(ride.getRider().getId())){
             throw new RuntimeException("Rider is not the owner of this Ride");
         }
 

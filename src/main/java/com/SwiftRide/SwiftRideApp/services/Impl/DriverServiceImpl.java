@@ -1,19 +1,15 @@
 package com.SwiftRide.SwiftRideApp.services.Impl;
 
 
-import com.SwiftRide.SwiftRideApp.dto.DriverDto;
-import com.SwiftRide.SwiftRideApp.dto.RideDto;
-import com.SwiftRide.SwiftRideApp.dto.RiderDto;
-import com.SwiftRide.SwiftRideApp.entities.Driver;
-import com.SwiftRide.SwiftRideApp.entities.Ride;
-import com.SwiftRide.SwiftRideApp.entities.RideRequest;
-import com.SwiftRide.SwiftRideApp.entities.User;
+import com.SwiftRide.SwiftRideApp.dto.*;
+import com.SwiftRide.SwiftRideApp.entities.*;
 import com.SwiftRide.SwiftRideApp.entities.enums.RideRequestStatus;
 import com.SwiftRide.SwiftRideApp.entities.enums.RideStatus;
 import com.SwiftRide.SwiftRideApp.exceptions.ResourceNotFoundException;
 import com.SwiftRide.SwiftRideApp.repositories.DriverRepository;
 import com.SwiftRide.SwiftRideApp.services.*;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,7 +55,9 @@ public class DriverServiceImpl implements DriverService {
         Ride ride = rideService.getRideById(rideId);
 
         Driver driver = getCurrentDriver();
-        if (!driver.equals(ride.getDriver())) {
+
+//        if (!driver.equals(ride.getDriver())) {
+        if (driver.getId() != ride.getDriver().getId()) {
             throw new RuntimeException("Driver cannot start a ride as he has not accepted it earlier");
         }
 
@@ -78,11 +76,18 @@ public class DriverServiceImpl implements DriverService {
         Ride ride = rideService.getRideById(rideId);
         Driver driver = getCurrentDriver();
 
-        if (!driver.equals(ride.getDriver())) {
+//        if (!driver.equals(ride.getDriver())) {
+        if (driver.getId() != ride.getDriver().getId()) {
             throw new RuntimeException("Driver cannot start a ride as he has not accepted it earlier");
         }
+//        if (ride.getDriver() == null || driver.getId() == null ||
+//                !driver.getId().equals(ride.getDriver().getId())) {
+//            throw new RuntimeException("Driver cannot start a ride as he has not accepted it earlier");
+//        }
 
-        if (!ride.getRideStatus().equals(RideStatus.CONFIRMED)) {
+//        if (!ride.getRideStatus().equals(RideStatus.CONFIRMED)) {
+//        }
+        if (ride.getRideStatus() != RideStatus.CONFIRMED) {
             throw new RuntimeException("Ride status is not CONFIRMED hence cannot be started, status: " + ride.getRideStatus());
         }
 
@@ -96,7 +101,40 @@ public class DriverServiceImpl implements DriverService {
         paymentService.createNewPayment(savedRide);
         ratingService.createNewRating(savedRide);
 
-        return modelMapper.map(savedRide, RideDto.class);
+//        return modelMapper.map(savedRide, RideDto.class);
+
+
+        RideDto rideDto = new RideDto();
+        rideDto.setId(savedRide.getId());
+
+
+        Point pickupLocation = savedRide.getPickupLocation();
+        Point dropOffLocation = savedRide.getDropOffLocation();
+        rideDto.setPickupLocation(modelMapper.map(pickupLocation, PointDto.class));
+        rideDto.setDropOffLocation(modelMapper.map(dropOffLocation, PointDto.class));
+
+        rideDto.setCreatedTime(savedRide.getCreatedTime());
+
+        Rider rider = savedRide.getRider();
+        RiderDto riderDto = new RiderDto();
+        riderDto.setId(ride.getId());
+        riderDto.setRating(rider.getRating());
+        UserDto user = modelMapper.map(rider.getUser(), UserDto.class);
+        riderDto.setUser(user);
+        rideDto.setRider(riderDto);
+
+
+        Driver driver1 = savedRide.getDriver();
+        rideDto.setDriver(modelMapper.map(driver1, DriverDto.class));
+
+        rideDto.setPaymentMethod(savedRide.getPaymentMethod());
+        rideDto.setRideStatus(savedRide.getRideStatus());
+        rideDto.setOtp(savedRide.getOtp());
+        rideDto.setFare(savedRide.getFare());
+        rideDto.setStartedAt(savedRide.getStartedAt());
+        rideDto.setEndedAt(savedRide.getEndedAt());
+
+        return rideDto;
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.SwiftRide.SwiftRideApp.entities.enums.RideRequestStatus;
 import com.SwiftRide.SwiftRideApp.entities.enums.RideStatus;
 import com.SwiftRide.SwiftRideApp.exceptions.ResourceNotFoundException;
 import com.SwiftRide.SwiftRideApp.repositories.RideRepository;
+import com.SwiftRide.SwiftRideApp.repositories.RideRequestRepository;
 import com.SwiftRide.SwiftRideApp.services.RideRequestService;
 import com.SwiftRide.SwiftRideApp.services.RideService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -26,6 +28,7 @@ public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final RideRequestService rideRequestService;
     private final ModelMapper modelMapper;
+    private final RideRequestRepository rideRequestRepository;
 
     @Override
     public Ride getRideById(Long rideId) {
@@ -37,6 +40,7 @@ public class RideServiceImpl implements RideService {
     @Override
     public Ride createNewRide(RideRequest rideRequest, Driver driver) {
         rideRequest.setRideRequestStatus(RideRequestStatus.CONFIRMED);
+        rideRequestRepository.save(rideRequest);
 
         Ride ride = modelMapper.map(rideRequest, Ride.class);
         ride.setRideStatus(RideStatus.CONFIRMED);
@@ -46,6 +50,19 @@ public class RideServiceImpl implements RideService {
 
         rideRequestService.update(rideRequest);
         return rideRepository.save(ride);
+
+//        Ride ride1 = new Ride();
+//        ride.setDriver(driver);
+//        ride.setRider(rideRequest.getRider());
+////        ride.setR(rideRequest);
+//        ride.setRideStatus(RideStatus.CONFIRMED);
+//        ride.setCreatedTime(LocalDateTime.now());
+//        ride = rideRepository.save(ride);
+//
+//        rideRequest.se(ride);
+//        rideRequestRepository.save(rr);
+
+//        return ride;
     }
 
     @Override

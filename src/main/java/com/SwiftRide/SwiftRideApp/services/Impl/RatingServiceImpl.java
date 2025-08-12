@@ -32,7 +32,7 @@ public class RatingServiceImpl implements RatingService {
         Rating ratingObj = ratingRepository.findByRide(ride)
                 .orElseThrow(() -> new ResourceNotFoundException("Rating not found for ride with id: "+ride.getId()));
 
-        if(ratingObj.getDriverRating() != null)
+        if(ratingObj.getDriverRating() != 0)
             throw new RuntimeConflictException("Driver has already been rated, cannot rate again");
 
         ratingObj.setDriverRating(rating);
