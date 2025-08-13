@@ -76,7 +76,7 @@ public class DriverServiceImpl implements DriverService {
     public RideDto startRide(Long rideId, String otp) {
         Ride ride = rideService.getRideById(rideId);
         Driver driver = getCurrentDriver();
-
+        System.out.println("this will go in commit");
 //        if (!driver.equals(ride.getDriver())) {
         if (driver.getId() != ride.getDriver().getId()) {
             throw new RuntimeException("Driver cannot start a ride as he has not accepted it earlier");
